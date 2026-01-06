@@ -1,15 +1,19 @@
-node {
-    stage('Clone repository') {
-        git credentialsId: 'github-access', url: 'https://github.com/maximum-zero/web-count.git'
-    }
+pipeline {
+    agent any
 
-    stage('Build image') {
-       dockerImage = docker.build("maximum0/web_count:v1.0")
-    }
+    stages {
+        stage('Clone repository') {
+            git credentialsId: 'github-access', url: 'https://github.com/maximum-zero/web-count.git'
+	}
 
-    stage('Push image') {
-        withDockerRegistry([ credentialsId: "docker-access", url: "" ]) {
-        dockerImage.push()
+        stage('Build image') {
+           dockerImage = docker.build("maximum0/web_count:v1.0")
+        }
+
+        stage('Push image') {
+            withDockerRegistry([ credentialsId: "docker-access", url: "" ]) {
+                dockerImage.push()
+            }
         }
     }
 }
